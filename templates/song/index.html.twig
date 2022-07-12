@@ -36,13 +36,28 @@
             height: 30px;
         }
     </style>
-    <html>
-
-    </html>
-    <body>
         <div class="list w-100">
+
             <h1>Song List</h1>
+            <br>
+            <div>  &ensp; </div>
             <table class="table">
+                <form action={{ path('app_song_index') }} method="get"  >
+                    Category:
+                    <select name="Category">
+                        <option value="" {{ (selectedCat=="ull") ? 'selected' }}> </option>
+                        <option value="edm" {{ (selectedCat=="edm") ? 'selected' }}> edm</option>
+                        <option value="lofi" {{ (selectedCat=="lofi") ? 'selected' }}> lofi</option>
+                        <option value="dance" {{ (selectedCat=="dance") ? 'selected' }}> dance</option>
+                        <option value="te" {{ (selectedCat=="te") ? 'selected' }}> te</option>
+                    </select>
+                    &ensp; <input type="submit" value="Filter" class="btn btn-primary">
+                    <br>
+                    <div>  &ensp; </div>
+                </form>
+                <br>
+                <div>  &ensp; </div>                    <br>
+                <div>  &ensp; </div>
                 <thead>
                 <tr>
                     <th>Image</th>
