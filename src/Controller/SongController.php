@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SongController extends AbstractController
 {
-/**
+    /**
      * @Route("/", name="app_song_index", methods={"GET"})
      */
     public function index(SongRepository $songRepository,  Request $request): Response
@@ -38,7 +38,7 @@ class SongController extends AbstractController
 
         // 4. Return a number as response
         // e.g 972
-
+        $Name = $request->query->get('name');
         $selectedAname = $request->query->get('Aname');
         $selectedGenre = $request->query->get('Category');
         $expressionBuilder = Criteria::expr();
@@ -49,6 +49,9 @@ class SongController extends AbstractController
         if (!is_null($selectedAname)) {
             $criteria->andWhere($expressionBuilder->eq('Aname', $selectedAname));
         }
+        if (!is_null($Name) && !empty(($Name))) {
+            $criteria->andWhere($expressionBuilder->contains('name', $Name));
+        }
         $filteredList = $songRepository->matching($criteria);
 
         return $this->render('song/index.html.twig', [
@@ -58,6 +61,8 @@ class SongController extends AbstractController
             'selectedAname' => $selectedAname ?: 'Calvin Harris',
         ]);
     }
+
+
     /**
      * @Route("/new", name="app_song_new", methods={"GET", "POST"})
      */
@@ -84,6 +89,15 @@ class SongController extends AbstractController
     public function show(Song $song): Response
     {
         return $this->render('song/show.html.twig', [
+            'song' => $song,
+        ]);
+    }
+    /**
+     * @Route("/{id}/player", name="app_song_player", methods={"GET"})
+     */
+    public function player(Song $song): Response
+    {
+        return $this->render('song/player.html.twig', [
             'song' => $song,
         ]);
     }
