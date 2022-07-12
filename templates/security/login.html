@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <style>
+        .login-form{
+            margin: auto;
+
+        }
+
+        form{
+            padding-bottom: 20px;
+            margin-top: 124px;
+            margin-bottom: 200px;
+        }
+        h1 {
+            font-size: 62px;
+            background: -webkit-linear-gradient(#20fff8, #40ff90);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        input{
+            display: block;
+            margin : 0 auto;
+            border-left-style:none;
+            border-right-style: none;
+            border-top-style: none;
+            border-bottom-style: solid;
+            border-bottom-color: #11ffdd;
+        }
+        .form-floating{
+            display: block;
+            position: relative;
+            margin-top: 40px;
+            font-size: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            background: -webkit-linear-gradient(#20fff8, #40ff90);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+        }
+        .btn1{
+            display: block;
+            margin : 0 auto;
+            margin-top: 30px;
+            color:black;
+            background:linear-gradient(120deg,#20fff8, #40ff90) ;
+            padding: 20px;
+            font-size: 20px;
+            border-style: none;
+            border-radius: 25px;
+        }
+
+        .btn1:hover{
+            color: white;
+        }
+    </style>
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        <div class="login-form w-25 text-center">
+            <div class="login-control">
+                <h1 class="text-6xl pt-12 pb-8">
+                    Login
+                </h1>
+
+                <input
+                        type="email"
+                        value="{{ last_username }}"
+                        name="email"
+                        id="inputEmail"
+                        class="form-floating"
+                        placeholder="Email"
+                        autocomplete="email"
+                        required
+                        autofocus
+                >
+
+                <input
+                        type="password"
+                        name="password"
+                        id="inputPassword"
+                        class="form-floating"
+                        autocomplete="current-password"
+                        placeholder="Password"
+                        required
+                >
+
+                <input
+                        type="hidden"
+                        name="_csrf_token"
+                        value="{{ csrf_token('authenticate') }}"
+                >
+
+                <button
+                        class="btn1"
+                        type="submit">
+                    Sign in
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
