@@ -1,0 +1,82 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Song index{% endblock %}
+
+{% block body %}
+    <style>
+
+        .list{
+            background-image: url({{ asset('images/music.jpg') }});
+            background-size: 200% 200%;
+            animation: gradient 80s ease infinite;
+            padding: 0;
+            margin: 0;
+            max-width: 1300px;
+            color: aquamarine;
+            height: 900px;
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        .sidebar{
+            background:black;
+        }
+        .table{
+            color: aquamarine;
+        }
+        .resize1{
+            height: 30px;
+        }
+    </style>
+    <html>
+
+    </html>
+    <body>
+        <div class="list w-100">
+            <h1>Song List</h1>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for song in songs %}
+                    <tr>
+                        <td>    <div class="iq-realese-song ">
+                                <a href="{{ path('app_song_player', {'id': song.id}) }}" tabindex="0"><img src="{{ asset(song.ImgUrl) }}" class="resize1 " alt=""></a>
+                                </div>
+                        </td>
+                        <td>{{ song.id }}</td>
+                        <td>{{ song.name }}</td>
+                        <td>{{ song.date ? song.date|date('Y-m-d') : '' }}</td>
+                        <td>
+                            <a href="{{ path('app_song_show', {'id': song.id}) }}">show</a>
+                            <a href="{{ path('app_song_edit', {'id': song.id}) }}">edit</a>
+                            <a href="{{ path('app_song_player', {'id': song.id}) }}">Play</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ path('app_song_new') }}">Create new</a>
+        </div>
+    </div>
+    </body>
+{% endblock %}

@@ -1,0 +1,506 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Song index{% endblock %}
+
+{% block body %}
+<style>
+
+    .player {
+        position: relative;
+        max-width: 480px;
+        margin: 0 auto;;
+    }
+
+    .player .icon-pause {
+        display: none;
+    }
+
+    .player.playing .icon-pause {
+        display: inline-block;
+    }
+
+    .player.playing .icon-play {
+        display: none;
+    }
+
+    .dashboard {
+        padding: 13px 13px 14px;
+        background-color: #1897f3;
+        position: fixed;
+        left: 19%;
+        bottom: 0px;
+        width: 100%;
+        max-width: 1225px;
+        border-bottom: 1px solid #ebebeb;
+        opacity: 0.6;
+        height: 180px;
+    }
+
+    /* HEADER */
+    header {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    header h4 {
+        color: var(--primary-color);
+        font-size: 12px;
+    }
+
+    header h2 {
+        color: var(--text-color);
+        font-size: 20px;
+    }
+
+    /* CD */
+
+
+    /* CONTROL */
+    .control {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 18px 0 8px 0;
+    }
+
+    .control .btn {
+        color: rebeccapurple;
+        padding: 18px;
+        font-size: 18px;
+    }
+
+    .control .btn.active {
+        color: rebeccapurple;
+    }
+
+
+
+    .progress {
+        width: 100%;
+        -webkit-appearance: none;
+        height: 6px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: 0.2s;
+        transition: opacity 0.2s;
+    }
+
+
+
+    .list{
+        background-image:url({{ asset('images/music.jpg') }}); ;
+        background-size: 200% 200%;
+        animation: gradient 80s ease infinite;
+        padding: 0;
+        margin: 0;
+        max-width: 1300px;
+        color: aquamarine;
+        height: 900px;
+    }
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+    .sidebar{
+        background:black;
+    }
+    .table{
+        color: aquamarine;
+    }
+    .resize1{
+        height: 100px;
+    }
+</style>
+<body>
+<div class=" d-flex ">
+    <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white " style="width: 280px;">
+        <a href= {{ path('app_home') }} class="d-flex">
+        <img class="bi pe-none me-2" width="40" height="32" src="{{ asset('images/home.png') }}" >
+        <span class="fs-4">H2 music</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column ">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" aria-current="page">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                    Orders
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                    Products
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    Customers
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-6/290757642_414407320701345_7858183408173586397_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=deTazUac1oMAX9itmP4&_nc_oc=AQmhalh7i8koO5o2hZRfd1NaKnBIbUvIb_Uk36mQ6BkNKCigEkK_W9OJaj2-rplOYig&_nc_ht=scontent.fsgn2-3.fna&oh=00_AT-7r2DQigAHMURArIJs9gA_LXMNnZ15exonocYh0Mi58g&oe=62C416E4" alt="" width="32" height="32" class="rounded-circle me-2">
+                {% if app.user %}
+                    <strong>{{ app.user.username }}</strong>
+                {% endif %}
+
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="#">New project...</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/{{ app.user ? 'logout' : 'login' }}">{{ app.user ? 'Logout' : 'Login' }}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="list w-100">
+        <h1>Song list</h1>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Singer</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <div class="iq-realese-song ">
+                    <a href="{{ path('app_song_player', {'id': song.id}) }}" tabindex="0"><img src="{{ asset(song.ImgUrl) }}" class="resize1 " alt=""></a>
+                </div>
+                <td>{{ song.id }}</td>
+                <td>{{ song.name }}</td>
+                <td>{{ song.date ? song.date|date('Y-m-d') : '' }}</td>
+                <td>{{ song.Aname }}</td>
+                <td>
+                    <a href="{{ path('app_song_show', {'id': song.id}) }}">show</a>
+                    <a href="{{ path('app_song_edit', {'id': song.id}) }}">edit</a>
+                    <a href="{{ path('app_song_player', {'id': song.id}) }}">Play</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="{{ path('app_song_new') }}">Create new       |</a>
+        <a href="{{ path('app_song_index') }}">Back to list</a>
+    </div>
+</div>
+</body>
+<title>Music player</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<div class="player">
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Header -->
+        <header>
+            <h4>Now playing:</h4>
+            <h2>String 57th & 9th</h2>
+        </header>
+
+        <!-- CD -->
+        <div class="cd">
+            <div class="cd-thumb">
+            </div>
+        </div>
+
+        <!-- Control -->
+        <div class="control">
+            <div class="btn btn-repeat">
+                <i class="fas fa-redo"></i>
+            </div>
+            <div class="btn btn-prev">
+                <i class="fas fa-step-backward"></i>
+            </div>
+            <div class="btn btn-toggle-play">
+                <i class="fas fa-pause icon-pause"></i>
+                <i class="fas fa-play icon-play"></i>
+            </div>
+            <div class="btn btn-next">
+                <i class="fas fa-step-forward"></i>
+            </div>
+            <div class="btn btn-random">
+                <i class="fas fa-random"></i>
+            </div>
+        </div>
+
+        <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+
+        <audio id="audio" src=""></audio>
+    </div>
+
+    <!-- Playlist -->
+    <div class="playlist">
+    </div>
+    </body>
+    <script>
+        // Một số bài hát có thể bị lỗi do liên kết bị hỏng. Vui lòng thay thế liên kết khác để có thể phát
+        // Some songs may be faulty due to broken links. Please replace another link so that it can be played
+
+        const $ = document.querySelector.bind(document);
+        const $$ = document.querySelectorAll.bind(document);
+
+        const PlAYER_STORAGE_KEY = "F8_PLAYER";
+
+        const player = $(".player");
+        const cd = $(".cd");
+        const heading = $("header h2");
+        const cdThumb = $(".cd-thumb");
+        const audio = $("#audio");
+        const playBtn = $(".btn-toggle-play");
+        const progress = $("#progress");
+        const prevBtn = $(".btn-prev");
+        const nextBtn = $(".btn-next");
+        const randomBtn = $(".btn-random");
+        const repeatBtn = $(".btn-repeat");
+        const playlist = $(".playlist");
+
+        const app = {
+            currentIndex: 0,
+            isPlaying: false,
+            isRandom: false,
+            isRepeat: false,
+            config: {},
+            // (1/2) Uncomment the line below to use localStorage
+            // config: JSON.parse(localStorage.getItem(PlAYER_STORAGE_KEY)) || {},
+            songs: [
+
+                {
+                    name: "{{ song.name }}",
+                    path: "{{ asset(song.musicUrl)}}",
+                    image:
+                        "https://a10.gaanacdn.com/images/albums/72/3019572/crop_480x480_3019572.jpg"
+                },
+
+            ],
+            setConfig: function (key, value) {
+                this.config[key] = value;
+                // (2/2) Uncomment the line below to use localStorage
+                // localStorage.setItem(PlAYER_STORAGE_KEY, JSON.stringify(this.config));
+            },
+
+            defineProperties: function () {
+                Object.defineProperty(this, "currentSong", {
+                    get: function () {
+                        return this.songs[this.currentIndex];
+                    }
+                });
+            },
+            handleEvents: function () {
+                const _this = this;
+                const cdWidth = cd.offsetWidth;
+
+                // Xử lý CD quay / dừng
+                // Handle CD spins / stops
+                const cdThumbAnimate = cdThumb.animate([{ transform: "rotate(360deg)" }], {
+                    duration: 10000, // 10 seconds
+                    iterations: Infinity
+                });
+                cdThumbAnimate.pause();
+
+                // Handle when click play
+                playBtn.onclick = function () {
+                    if (_this.isPlaying) {
+                        audio.pause();
+                    } else {
+                        audio.play();
+                    }
+                };
+
+                // Khi song được play
+                // When the song is played
+                audio.onplay = function () {
+                    _this.isPlaying = true;
+                    player.classList.add("playing");
+                    cdThumbAnimate.play();
+                };
+
+                // Khi song bị pause
+                // When the song is pause
+                audio.onpause = function () {
+                    _this.isPlaying = false;
+                    player.classList.remove("playing");
+                    cdThumbAnimate.pause();
+                };
+
+
+                // Xử lý khi tua song
+                // Handling when seek
+                progress.onchange = function (e) {
+                    const seekTime = (audio.duration / 100) * e.target.value;
+                    audio.currentTime = seekTime;
+                };
+
+                // Khi next song
+                // When next song
+                nextBtn.onclick = function () {
+                    if (_this.isRandom) {
+                        _this.playRandomSong();
+                    } else {
+                        _this.nextSong();
+                    }
+                    audio.play();
+                    _this.render();
+                    _this.scrollToActiveSong();
+                };
+
+                // Khi prev song
+                // When prev song
+                prevBtn.onclick = function () {
+                    if (_this.isRandom) {
+                        _this.playRandomSong();
+                    } else {
+                        _this.prevSong();
+                    }
+                    audio.play();
+                    _this.render();
+                    _this.scrollToActiveSong();
+                };
+
+                // Xử lý bật / tắt random song
+                // Handling on / off random song
+                randomBtn.onclick = function (e) {
+                    _this.isRandom = !_this.isRandom;
+                    _this.setConfig("isRandom", _this.isRandom);
+                    randomBtn.classList.toggle("active", _this.isRandom);
+                };
+
+                // Xử lý lặp lại một song
+                // Single-parallel repeat processing
+                repeatBtn.onclick = function (e) {
+                    _this.isRepeat = !_this.isRepeat;
+                    _this.setConfig("isRepeat", _this.isRepeat);
+                    repeatBtn.classList.toggle("active", _this.isRepeat);
+                };
+
+                // Xử lý next song khi audio ended
+                // Handle next song when audio ended
+                audio.onended = function () {
+                    if (_this.isRepeat) {
+                        audio.play();
+                    } else {
+                        nextBtn.click();
+                    }
+                };
+
+                // Lắng nghe hành vi click vào playlist
+                // Listen to playlist clicks
+                playlist.onclick = function (e) {
+                    const songNode = e.target.closest(".song:not(.active)");
+
+                    if (songNode || e.target.closest(".option")) {
+                        // Xử lý khi click vào song
+                        // Handle when clicking on the song
+                        if (songNode) {
+                            _this.currentIndex = Number(songNode.dataset.index);
+                            _this.loadCurrentSong();
+                            _this.render();
+                            audio.play();
+                        }
+
+                        // Xử lý khi click vào song option
+                        // Handle when clicking on the song option
+                        if (e.target.closest(".option")) {
+                        }
+                    }
+                };
+            },
+            scrollToActiveSong: function () {
+                setTimeout(() => {
+                    $(".song.active").scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest"
+                    });
+                }, 300);
+            },
+            loadCurrentSong: function () {
+                heading.textContent = this.currentSong.name;
+                cdThumb.style.backgroundImage = `url('${this.currentSong.image}')`;
+                audio.src = this.currentSong.path;
+            },
+            loadConfig: function () {
+                this.isRandom = this.config.isRandom;
+                this.isRepeat = this.config.isRepeat;
+            },
+            nextSong: function () {
+                this.currentIndex++;
+                if (this.currentIndex >= this.songs.length) {
+                    this.currentIndex = 0;
+                }
+                this.loadCurrentSong();
+            },
+            prevSong: function () {
+                this.currentIndex--;
+                if (this.currentIndex < 0) {
+                    this.currentIndex = this.songs.length - 1;
+                }
+                this.loadCurrentSong();
+            },
+            playRandomSong: function () {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * this.songs.length);
+                } while (newIndex === this.currentIndex);
+
+                this.currentIndex = newIndex;
+                this.loadCurrentSong();
+            },
+            start: function () {
+                // Gán cấu hình từ config vào ứng dụng
+                // Assign configuration from config to application
+                this.loadConfig();
+
+                // Định nghĩa các thuộc tính cho object
+                // Defines properties for the object
+                this.defineProperties();
+
+                // Lắng nghe / xử lý các sự kiện (DOM events)
+                // Listening / handling events (DOM events)
+                this.handleEvents();
+
+                // Tải thông tin bài hát đầu tiên vào UI khi chạy ứng dụng
+                // Load the first song information into the UI when running the app
+                this.loadCurrentSong();
+
+                // Render playlist
+                this.render();
+
+                // Hiển thị trạng thái ban đầu của button repeat & random
+                // Display the initial state of the repeat & random button
+                randomBtn.classList.toggle("active", this.isRandom);
+                repeatBtn.classList.toggle("active", this.isRepeat);
+            }
+        };
+
+        app.start();
+
+    </script>
+    {% endblock %}
