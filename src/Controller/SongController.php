@@ -40,6 +40,7 @@ class SongController extends AbstractController
         // e.g 972
         $selectedAname = $request->query->get('Aname');
         $selectedGenre = $request->query->get('Category');
+        
         $expressionBuilder = Criteria::expr();
         $criteria = new Criteria();
         if (!is_null($selectedGenre)) {
@@ -49,7 +50,10 @@ class SongController extends AbstractController
             $criteria->andWhere($expressionBuilder->eq('Aname', $selectedAname));
         }
         $filteredList = $songRepository->matching($criteria);
-
+// search function
+        if (!is_null($Name) && !empty(($Name))) {
+            $criteria->andWhere($expressionBuilder->contains('name', $Name));
+        }
         return $this->render('song/index.html.twig', [
             'total' => ($totalArticles),
             'songs' => $filteredList,
