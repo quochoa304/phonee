@@ -11,7 +11,54 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/artist")
+ */
+class ArtistController extends AbstractController
+{
+ /**
+     * @Route("/", name="app_artist_index", methods={"GET"})
+     */
+    public function index(ArtistRepository $artistRepository,Request $request): Response
+    {
+        // 1. Obtain doctrine manager
+        $em = $this->getDoctrine()->getManager();
 
+        // 2. Setup repository of some entity
+        $repoArticles = $em->getRepository(Artist::class);
+
+        // 3. Query how many rows are there in the Articles table
+        $totalArticles = $repoArticles->createQueryBuilder('a')
+            // Filter by some parameter if you want
+            // ->where('a.published = 1')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // 4. Return a number as response
+        // e.g 972
+        $Name = $request->query->get('name');
+        $selectedBorn = $request->query->get('Born');
+        $selectedCountry = $request->query->get('country');
+        $expressionBuilder = Criteria::expr();
+        $criteria = new Criteria();
+        if (!is_null($selectedCountry)) {
+            $criteria->andWhere($expressionBuilder->eq('country', $selectedCountry));
+        }
+        if (!is_null($selectedBorn)) {
+            $criteria->andWhere($expressionBuilder->eq('Born', $selectedBorn));
+        }
+        if (!is_null($Name) && !empty(($Name))) {
+            $criteria->andWhere($expressionBuilder->contains('name', $Name));
+        }
+        $filteredList = $artistRepository->matching($criteria);
+        return $this->render('artist/index.html.twig', [
+            'artists' => $filteredList,
+            'total' => ($totalArticles),
+            'selectedCat' => $selectedCountry ?: 'Unite Kingdom',
+            'selectedBorn' => $selectedBorn ?: 'Calvin Harris',
+        ]);
+    }
     /**
      * @Route("/new", name="app_artist_new", methods={"GET", "POST"})
      */
