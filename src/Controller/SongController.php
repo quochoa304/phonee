@@ -135,4 +135,13 @@ class SongController extends AbstractController
 
         return $this->redirectToRoute('app_song_index', [], Response::HTTP_SEE_OTHER);
     }
+        /**
+     * @Route("/{id}/player", name="app_song_player", methods={"GET"})
+     */
+    public function player(Song $song): Response
+    {
+        return $this->render('song/player.html.twig', [
+            'song' => $song,
+        ]);
+    }
 }
