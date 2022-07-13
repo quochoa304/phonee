@@ -18,8 +18,18 @@ class SongType extends AbstractType
         $builder
             ->add('name')
             ->add('date')
-            ->add('ImgUrl')
-            ->add('musicUrl')
+            ->add('ImgUrl', FileType::class, [
+                'label' => 'Avatar
+                 (PDF file)',
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('MusicUrl', FileType::class, [
+                'label' => 'Avatar
+                 (Mp3 file)',
+                'mapped' => false,
+                'required' => false,
+            ])
             ->add('artist',EntityType::class,[
                 'class'=> Artist::class,
                 'choice_label' => 'Name'
