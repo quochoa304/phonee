@@ -93,7 +93,8 @@
                         name="_csrf_token"
                         value="{{ csrf_token('authenticate') }}"
                 >
-
+                <p>Don't have an Account ?</p>
+                <a href={{ path('app_register') }}>Sign up here</a>
                 <button
                         class="btn1"
                         type="submit">
