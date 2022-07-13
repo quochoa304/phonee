@@ -38,7 +38,6 @@ class SongController extends AbstractController
 
         // 4. Return a number as response
         // e.g 972
-        $Name = $request->query->get('name');
         $selectedAname = $request->query->get('Aname');
         $selectedGenre = $request->query->get('Category');
         $expressionBuilder = Criteria::expr();
@@ -48,9 +47,6 @@ class SongController extends AbstractController
         }
         if (!is_null($selectedAname)) {
             $criteria->andWhere($expressionBuilder->eq('Aname', $selectedAname));
-        }
-        if (!is_null($Name) && !empty(($Name))) {
-            $criteria->andWhere($expressionBuilder->contains('name', $Name));
         }
         $filteredList = $songRepository->matching($criteria);
 
